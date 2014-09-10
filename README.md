@@ -17,9 +17,9 @@ GPIO 8_19
 
 To turn lights on uncomment lights
 
-Code:
+Delete:
 ```script
 """ lights
-GPIO ports here
+
 """
 ```
