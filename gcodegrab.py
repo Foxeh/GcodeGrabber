@@ -97,7 +97,7 @@ class DeviceAddedListener:
         mkdir = 'sudo mkdir %s' % (self.mount_dir)
         mount = 'sudo mount -t %s /dev/sda1 %s' % (self.fstype, self.mount_dir)
         print 'Mounting Device: %s (%s)' % (self.label, self.mount_dir)                   
-                                                  
+               
         if not os.path.exists(self.mount_dir):
             result = commands.getstatusoutput(mkdir)
 
@@ -114,10 +114,11 @@ class DeviceAddedListener:
             else:
                 result = commands.getstatusoutput(mount)
                 self.mounted = True
+                
+                gcode = "sudo mkdir /tmp/gcode/"
+                result = commands.getstatusoutput(gcode)
 
-                remove = "sudo rm ~ctf-scada/etchasketch/files/*"
-                result = commands.getstatusoutput(remove)
-                copy = "sudo cp /mnt/" + self.label + "/*.gcode /tmp/gcode/"
+                copy = "sudo cp /media/" + self.label + "/*.gcode /tmp/gcode/"
                 result = commands.getstatusoutput(copy)
 
                 if result[0] != 0:
