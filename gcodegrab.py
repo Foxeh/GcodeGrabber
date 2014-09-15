@@ -1,8 +1,5 @@
 import Adafruit_BBIO.GPIO as GPIO
-import dbus
-import gobject
-import commands,os,sys,random
-import time
+import dbus,gobject,commands,os,sys,random,time,logging
 
 class DeviceAddedListener:
     
@@ -13,6 +10,8 @@ class DeviceAddedListener:
 
     GPIO.output("P8_15", GPIO.HIGH)
     """
+    
+    logging.basicConfig(filename='gcodedebug.log', format='%(asctime)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     
     def __init__(self):
         
@@ -44,10 +43,10 @@ class DeviceAddedListener:
             if self.mounted:
                 result = commands.getstatusoutput('sudo umount -f /dev/sda1')
                 result = commands.getstatusoutput('sudo rm -rf %s' % (self.mount_dir))
-                print "Device Removed."
+                logging.warning('Device Removed.')
 
             else:
-                print "Device removed, something was wrong with it."
+                logging.warning('Device removed, something was wrong with it.')
                 
             self.mounted = False
             self.usb = False
@@ -59,7 +58,7 @@ class DeviceAddedListener:
             GPIO.output("P8_15", GPIO.HIGH)
             """
             
-            print "Ready"
+            logging.warning('Ready')
             
     def do_something(self, volume):
         
@@ -80,12 +79,12 @@ class DeviceAddedListener:
         except:
             size = 0
                                                   
-        print "New storage device detected:"
-        print "  Device File: %s" % self.device_file
-        print "  UUID: %s" % self.uuid
-        print "  Label: %s" % self.label
-        print "  Fstype: %s" % self.fstype
-        print "  Size: %s (%.2fGB)" % (size, float(size) / 1024**3)
+        logging.warning('New storage device detected:')
+        logging.warning('  Device File: %s' % self.device_file)
+        logging.warning('  UUID: %s' % self.uuid)
+        logging.warning('  Label: %s' % self.label)
+        logging.warning('  Fstype: %s' % self.fstype)
+        logging.warning('  Size: %s (%.2fGB)' % (size, float(size) / 1024**3))
 
         time.sleep(1)
         
@@ -96,7 +95,7 @@ class DeviceAddedListener:
         self.mount_dir = "/mnt/" + self.label
         mkdir = 'sudo mkdir %s' % (self.mount_dir)
         mount = 'sudo mount -t %s /dev/sda1 %s' % (self.fstype, self.mount_dir)
-        print 'Mounting Device: %s (%s)' % (self.label, self.mount_dir)                   
+        logging.warning('Mounting Device: %s (%s)' % (self.label, self.mount_dir))                   
                
         if not os.path.exists(self.mount_dir):
             result = commands.getstatusoutput(mkdir)
@@ -108,7 +107,7 @@ class DeviceAddedListener:
                 GPIO.output("P8_19", GPIO.HIGH)
                 """
                 
-                print 'dir creation failed, aborting USB mount.'
+                logging.warning('dir creation failed, aborting USB mount.')
                 time.sleep(2)
 
             else:
@@ -128,7 +127,7 @@ class DeviceAddedListener:
                     GPIO.output("P8_19", GPIO.HIGH)
                     """
                     
-                    print 'Failed to copy Gcode...'
+                    logging.warning('Failed to copy Gcode...')
                     time.sleep(2)
                     
         else:
@@ -138,7 +137,7 @@ class DeviceAddedListener:
             GPIO.output("P8_19", GPIO.HIGH)
             """
             
-            print 'Unclean mount directory, please clean up.'
+            logging.warning('Unclean mount directory, please clean up.')
             time.sleep(2)
 
         result = commands.getstatusoutput('sudo umount -f /dev/sda1')
@@ -156,7 +155,7 @@ class DeviceAddedListener:
         GPIO.output("P8_15", GPIO.HIGH)
         """
         
-        print "Jobs Done."
+        logging.warning('Jobs Done.')
         
 if __name__ == '__main__':
     
