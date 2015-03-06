@@ -89,7 +89,7 @@ class DeviceAddedListener:
         time.sleep(1)
 
         if not self.label:
-	        self.label = self.uuid
+	    self.label = self.uuid
             logging.warning('No label on drive, using UUID instead. L2Format')
         
         if ' ' in self.label:
