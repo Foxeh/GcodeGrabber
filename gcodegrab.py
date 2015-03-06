@@ -93,8 +93,8 @@ class DeviceAddedListener:
             logging.warning('No label on drive, using UUID instead. L2Format')
         
         if ' ' in self.label:
-            name = self.label.split(' ')
-            self.label = name[0] + "\ " + name[1]
+            self.label = self.label.replace(" ", "\ ")
+            logging.warning('This drive has spaces in its name, why must you annoy me.')
         
         self.mount_dir = "/mnt/" + self.label
         mkdir = 'sudo mkdir %s' % (self.mount_dir)
