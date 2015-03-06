@@ -87,6 +87,10 @@ class DeviceAddedListener:
         logging.warning('  Size: %s (%.2fGB)' % (size, float(size) / 1024**3))
 
         time.sleep(1)
+
+        if not self.label:
+	        self.label = self.uuid
+            logging.warning('No label on drive, using UUID instead. L2Format')
         
         if ' ' in self.label:
             name = self.label.split(' ')
